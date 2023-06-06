@@ -1,10 +1,14 @@
-import CartComponent from '@/components/pages/cart'
-import React from 'react'
+import CartComponent from "@/components/pages/cart";
+import React, { Component } from "react";
 
-export default function index() {
-  return (
-    <div>
-        <CartComponent/>
-    </div>
-  )
+class componentName extends Component {
+  render() {
+    return (
+      <div>
+        <CartComponent />
+      </div>
+    );
+  }
 }
+
+export default componentName;

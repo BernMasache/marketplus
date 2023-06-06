@@ -1,18 +1,4 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-      require('@tailwindcss/aspect-ratio'),
-    ],
-  }
-  ```
-*/
+
 import { Fragment, useState } from "react";
 import { Dialog, Popover, Tab, Transition } from "@headlessui/react";
 import {
@@ -657,11 +643,11 @@ export default function MainLayout({ children }) {
                       </div>
 
                       <span
-                        className="mx-4 h-6 w-px bg-gray-200 lg:mx-6"
+                        className="mx-4 h-6 w-px bg-gray-200 lg:mx-6 sr-only"
                         aria-hidden="true"
                       />
 
-                      <div className="flow-root">
+                      <div className="flow-root sr-only">
                         <Link
                           href="/cart-items"
                           className="group -m-2 flex items-center p-2"
