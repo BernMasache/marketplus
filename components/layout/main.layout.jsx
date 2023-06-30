@@ -1,5 +1,4 @@
-
-import { Fragment, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { Dialog, Popover, Tab, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -9,10 +8,11 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import ProductsComponent from "../pages/products";
 import Link from "next/link";
 import FooterComponent from "../pages/footer";
-
+import { Store } from "@/services/utils/Store";
+import Cookies from "js-cookie";
+import { Libre_Franklin } from "next/font/google";
 const currencies = ["CAD", "USD", "AUD", "EUR", "GBP"];
 const navigation = {
   categories: [
@@ -85,6 +85,8 @@ function classNames(...classes) {
 
 export default function MainLayout({ children }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { state, dispatch } = useContext(Store);
+  const { cart } = state;
 
   return (
     <div className="bg-white">
@@ -171,14 +173,14 @@ export default function MainLayout({ children }) {
                                 className="mt-6 space-y-6"
                               >
                                 {category.featured.map((item) => (
-                                  <li key={item.name} className="flex">
+                                  <Link key={item.name} className="flex">
                                     <a
                                       href={item.href}
                                       className="text-gray-500"
                                     >
                                       {item.name}
                                     </a>
-                                  </li>
+                                  </Link>
                                 ))}
                               </ul>
                             </div>
@@ -195,14 +197,14 @@ export default function MainLayout({ children }) {
                                 className="mt-6 space-y-6"
                               >
                                 {category.categories.map((item) => (
-                                  <li key={item.name} className="flex">
-                                    <a
+                                  <Link key={item.name} className="flex">
+                                    {/* <a
                                       href={item.href}
                                       className="text-gray-500"
-                                    >
+                                    > */}
                                       {item.name}
-                                    </a>
-                                  </li>
+                                    {/* </a> */}
+                                  </Link>
                                 ))}
                               </ul>
                             </div>
@@ -221,14 +223,14 @@ export default function MainLayout({ children }) {
                                 className="mt-6 space-y-6"
                               >
                                 {category.collection.map((item) => (
-                                  <li key={item.name} className="flex">
+                                  <Link key={item.name} className="flex">
                                     <a
                                       href={item.href}
                                       className="text-gray-500"
                                     >
                                       {item.name}
                                     </a>
-                                  </li>
+                                  </Link>
                                 ))}
                               </ul>
                             </div>
@@ -246,14 +248,14 @@ export default function MainLayout({ children }) {
                                 className="mt-6 space-y-6"
                               >
                                 {category.brands.map((item) => (
-                                  <li key={item.name} className="flex">
+                                  <Link key={item.name} className="flex">
                                     <a
                                       href={item.href}
                                       className="text-gray-500"
                                     >
                                       {item.name}
                                     </a>
-                                  </li>
+                                  </Link>
                                 ))}
                               </ul>
                             </div>
@@ -454,7 +456,7 @@ export default function MainLayout({ children }) {
                                               >
                                                 {category.featured.map(
                                                   (item) => (
-                                                    <li
+                                                    <Link
                                                       key={item.name}
                                                       className="flex"
                                                     >
@@ -464,7 +466,7 @@ export default function MainLayout({ children }) {
                                                       >
                                                         {item.name}
                                                       </a>
-                                                    </li>
+                                                    </Link>
                                                   )
                                                 )}
                                               </ul>
@@ -483,7 +485,7 @@ export default function MainLayout({ children }) {
                                               >
                                                 {category.categories.map(
                                                   (item) => (
-                                                    <li
+                                                    <Link
                                                       key={item.name}
                                                       className="flex"
                                                     >
@@ -493,7 +495,7 @@ export default function MainLayout({ children }) {
                                                       >
                                                         {item.name}
                                                       </a>
-                                                    </li>
+                                                    </Link>
                                                   )
                                                 )}
                                               </ul>
@@ -514,7 +516,7 @@ export default function MainLayout({ children }) {
                                               >
                                                 {category.collection.map(
                                                   (item) => (
-                                                    <li
+                                                    <Link
                                                       key={item.name}
                                                       className="flex"
                                                     >
@@ -524,7 +526,7 @@ export default function MainLayout({ children }) {
                                                       >
                                                         {item.name}
                                                       </a>
-                                                    </li>
+                                                    </Link>
                                                   )
                                                 )}
                                               </ul>
@@ -543,7 +545,7 @@ export default function MainLayout({ children }) {
                                                 className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
                                               >
                                                 {category.brands.map((item) => (
-                                                  <li
+                                                  <Link
                                                     key={item.name}
                                                     className="flex"
                                                   >
@@ -553,7 +555,7 @@ export default function MainLayout({ children }) {
                                                     >
                                                       {item.name}
                                                     </a>
-                                                  </li>
+                                                  </Link>
                                                 ))}
                                               </ul>
                                             </div>
@@ -643,11 +645,11 @@ export default function MainLayout({ children }) {
                       </div>
 
                       <span
-                        className="mx-4 h-6 w-px bg-gray-200 lg:mx-6 sr-only"
+                        className="mx-4 h-6 w-px bg-gray-200 lg:mx-6"
                         aria-hidden="true"
                       />
 
-                      <div className="flow-root sr-only">
+                      <div className="flow-root">
                         <Link
                           href="/cart-items"
                           className="group -m-2 flex items-center p-2"
@@ -656,12 +658,16 @@ export default function MainLayout({ children }) {
                             className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                             aria-hidden="true"
                           />
-                          <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                            0
-                          </span>
-                          <span className="sr-only">
-                            items in cart, view bag
-                          </span>
+                          
+                          {
+                            cart?.cartItems?.length > 0?  (
+                              <span className="ml-1 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                                {cart?.cartItems?.reduce(
+                                  (a, c) => a + c.quantity,
+                                  0
+                                )}
+                              </span>
+                            ):""}
                         </Link>
                       </div>
                     </div>
@@ -673,9 +679,7 @@ export default function MainLayout({ children }) {
         </nav>
       </header>
 
-      <main>
-        {children}
-      </main>
+      <main>{children}</main>
 
       <FooterComponent />
     </div>
